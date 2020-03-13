@@ -25,7 +25,12 @@ def cityreader(cities=[]):
   # For each city record, create a new City instance and add it to the 
   # `cities` list
     import csv
-
+    # This website was helpful:
+    # https://www.geeksforgeeks.org/working-csv-files-python/
+    # Though it looks like it's out of date,
+    # since I need the double underscores around "next"
+    # (discovred by looking at the documentation here--
+    # https://docs.python.org/3/library/csv.html)
     with open('cities.csv', 'r') as csvfile:
         cityreader = csv.reader(csvfile)
         fields = cityreader.__next__()
@@ -82,11 +87,31 @@ for c in cities:
 # TODO Get latitude and longitude values from the user
 
 def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
-  # within will hold the cities that fall within the specified region
-  within = []
+    # within will hold the cities that fall within the specified region
+    within = []
 
-  # TODO Ensure that the lat and lon valuse are all floats
-  # Go through each city and check to see if it falls within 
-  # the specified coordinates.
+    # TODO Ensure that the lat and lon valuse are all floats
+    # Go through each city and check to see if it falls within 
+    # the specified coordinates.
+    if float(lat1) <= float(lat2):
+        # If they're equal, we'll just only return a city with that
+        # precise latitude, so this is fine.
+        lower_lat = float(lat1)
+        upper_lat = float(lat2)
+    else:
+        lower_lat = float(lat2)
+        upper_lat = float(lat1)
 
-  return within
+    if float(lon1) <= float(lon2):
+        lower_lon = float(lon1)
+        upper_lon = float(lon2)
+    else:
+        lower_lon = float(lon2)
+        upper_lon = float(lon1)
+
+    for city in cities:
+        if ((city.lat > lower_lat) and (city.lat < upper_lat) and
+           (city.lon > lower_lon) and (city.lon < upper_lon)):
+           within.append(city)
+
+    return within
