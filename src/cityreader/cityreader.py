@@ -21,9 +21,9 @@ class City:
 cities = []
 
 def cityreader(cities=[]):
-  # TODO Implement the functionality to read from the 'cities.csv' file
-  # For each city record, create a new City instance and add it to the 
-  # `cities` list
+    # TODO Implement the functionality to read from the 'cities.csv' file
+    # For each city record, create a new City instance and add it to the 
+    # `cities` list
     import csv
     # This website was helpful:
     # https://www.geeksforgeeks.org/working-csv-files-python/
@@ -34,13 +34,19 @@ def cityreader(cities=[]):
     with open('cities.csv', 'r') as csvfile:
         cityreader = csv.reader(csvfile)
         fields = cityreader.__next__()
-        relevant_field_nums = []
+        relevant_field_nums = {}
+        # "Enumerate" creates a list of tuples, with the first
+        # value being a number that goes up by one.
+        # See this useful Medium post for more info on using it in loops:
+        # https://medium.com/better-programming/stop-using-range-in-your-python-for-loops-53c04593f936
         for num, field in enumerate(fields):
+            # get the positions of the three relevant columns
             if field in ['city', 'lat', 'lng']:
-                relevant_field_nums.append(num)
-        name_num = relevant_field_nums[0]
-        lat_num = relevant_field_nums[1]
-        lon_num = relevant_field_nums[2]
+                # add field name as the key, and position as the value
+                relevant_field_nums[field] = num
+        name_num = relevant_field_nums['city']
+        lat_num = relevant_field_nums['lat']
+        lon_num = relevant_field_nums['lng']
         for row in cityreader:
             # At first I failed; I had to test some stuff in the command line
             # to realize I needed to convert the strings to floats...
@@ -85,7 +91,10 @@ for c in cities:
 # Salt Lake City: (40.7774,-111.9301)
 
 # TODO Get latitude and longitude values from the user
-
+input1 = input('\nEnter lat1,lon1: ')
+input2 = input('Enter lat2,lon2: ')
+lat1, lon1 = input1.split(',')
+lat2, lon2 = input2.split(',')
 def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
     # within will hold the cities that fall within the specified region
     within = []
@@ -115,3 +124,7 @@ def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
            within.append(city)
 
     return within
+
+within = cityreader_stretch(lat1, lon1, lat2, lon2, cities)
+for city in within:
+    print(f'{city.name}: ({city.lat}, {city.lon})')
